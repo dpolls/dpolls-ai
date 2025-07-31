@@ -21,54 +21,86 @@ export function AnimatedBackground() {
     resizeCanvas()
     window.addEventListener("resize", resizeCanvas)
 
-    // Transportation elements
-    const routes = []
-    const vehicles = []
+    // Chart elements
+    const barCharts = []
+    const pieCharts = []
 
-    // Generate curved route paths
-    for (let i = 0; i < 6; i++) {
-      const startX = Math.random() * canvas.width
-      const startY = Math.random() * canvas.height
-      const endX = Math.random() * canvas.width
-      const endY = Math.random() * canvas.height
-      const controlX = (startX + endX) / 2 + (Math.random() - 0.5) * 200
-      const controlY = (startY + endY) / 2 + (Math.random() - 0.5) * 200
+    // Generate bar charts with even distribution
+    const barPositions = [
+      { x: 0.15, y: 0.2 },
+      { x: 0.7, y: 0.15 },
+      { x: 0.25, y: 0.65 },
+      { x: 0.8, y: 0.7 },
+      { x: 0.05, y: 0.85 },
+    ]
 
-      routes.push({
-        startX,
-        startY,
-        endX,
-        endY,
-        controlX,
-        controlY,
-        opacity: 0.15 + Math.random() * 0.1,
-        width: 2 + Math.random() * 2,
+    for (let i = 0; i < 5; i++) {
+      const bars = []
+      const numBars = 4 + Math.floor(Math.random() * 5)
+      const chartX = barPositions[i].x * canvas.width
+      const chartY = barPositions[i].y * canvas.height
+      
+      for (let j = 0; j < numBars; j++) {
+        bars.push({
+          x: chartX + j * (120 / numBars),
+          baseHeight: 15 + Math.random() * 50,
+          currentHeight: 15 + Math.random() * 50,
+          targetHeight: 15 + Math.random() * 50,
+          width: (120 / numBars) * 0.7,
+          animationSpeed: 0.015 + Math.random() * 0.02,
+        })
+      }
+
+      barCharts.push({
+        bars,
+        baseY: chartY,
+        opacity: 0.05 + Math.random() * 0.06,
+        color: Math.random() > 0.5 ? "59, 130, 246" : "99, 102, 241",
       })
     }
 
-    // Generate vehicles moving along routes
-    for (let i = 0; i < 8; i++) {
-      const routeIndex = Math.floor(Math.random() * routes.length)
-      vehicles.push({
-        routeIndex,
-        progress: Math.random(),
-        speed: 0.003 + Math.random() * 0.005,
-        type: Math.random() > 0.5 ? "car" : "bus",
-        size: 4 + Math.random() * 3,
-        opacity: 0.3 + Math.random() * 0.2,
-      })
-    }
+    // Generate pie charts with even distribution
+    const piePositions = [
+      { x: 0.85, y: 0.25 },
+      { x: 0.1, y: 0.4 },
+      { x: 0.6, y: 0.8 },
+      { x: 0.9, y: 0.55 },
+      { x: 0.4, y: 0.3 },
+    ]
 
-    // Straight road lines
-    const roads = []
-    for (let i = 0; i < 4; i++) {
-      roads.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        length: 100 + Math.random() * 200,
-        angle: Math.random() * Math.PI * 2,
-        opacity: 0.1 + Math.random() * 0.1,
-        dashOffset: 0,
+    for (let i = 0; i < 5; i++) {
+      const segments = []
+      const numSegments = 3 + Math.floor(Math.random() * 3)
+      let totalValue = 0
+      
+      // Generate random values
+      const values = []
+      for (let j = 0; j < numSegments; j++) {
+        const value = 10 + Math.random() * 30
+        values.push(value)
+        totalValue += value
+      }
+
+      // Convert to angles
+      let currentAngle = 0
+      for (let j = 0; j < numSegments; j++) {
+        const angle = (values[j] / totalValue) * Math.PI * 2
+        segments.push({
+          startAngle: currentAngle,
+          endAngle: currentAngle + angle,
+          color: j % 3 === 0 ? "59, 130, 246" : j % 3 === 1 ? "99, 102, 241" : "147, 51, 234",
+          opacity: 0.05 + Math.random() * 0.06,
+        })
+        currentAngle += angle
+      }
+
+      pieCharts.push({
+        x: piePositions[i].x * canvas.width,
+        y: piePositions[i].y * canvas.height,
+        radius: 20 + Math.random() * 25,
+        segments,
+        rotation: 0,
+        rotationSpeed: 0.001 + Math.random() * 0.003,
       })
     }
 
@@ -77,21 +109,6 @@ export function AnimatedBackground() {
     }
 
     window.addEventListener("mousemove", handleMouseMove)
-
-    // Helper function to get point on quadratic curve
-    const getQuadraticPoint = (
-      t: number,
-      startX: number,
-      startY: number,
-      controlX: number,
-      controlY: number,
-      endX: number,
-      endY: number,
-    ) => {
-      const x = (1 - t) * (1 - t) * startX + 2 * (1 - t) * t * controlX + t * t * endX
-      const y = (1 - t) * (1 - t) * startY + 2 * (1 - t) * t * controlY + t * t * endY
-      return { x, y }
-    }
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -102,136 +119,94 @@ export function AnimatedBackground() {
       const radius = Math.min(canvas.width, canvas.height) * 0.6
 
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius)
-      gradient.addColorStop(0, "rgba(249, 115, 22, 0.02)")
-      gradient.addColorStop(0.5, "rgba(249, 115, 22, 0.01)")
-      gradient.addColorStop(1, "rgba(249, 115, 22, 0)")
+      gradient.addColorStop(0, "rgba(59, 130, 246, 0.02)")
+      gradient.addColorStop(0.5, "rgba(59, 130, 246, 0.01)")
+      gradient.addColorStop(1, "rgba(59, 130, 246, 0)")
 
       ctx.fillStyle = gradient
       ctx.beginPath()
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
       ctx.fill()
 
-      // Draw curved routes
-      routes.forEach((route, index) => {
-        const distance = Math.min(
-          Math.sqrt(Math.pow(mouseRef.current.x - route.startX, 2) + Math.pow(mouseRef.current.y - route.startY, 2)),
-          Math.sqrt(Math.pow(mouseRef.current.x - route.endX, 2) + Math.pow(mouseRef.current.y - route.endY, 2)),
-          Math.sqrt(
-            Math.pow(mouseRef.current.x - route.controlX, 2) + Math.pow(mouseRef.current.y - route.controlY, 2),
-          ),
-        )
+      // Draw bar charts
+      barCharts.forEach((chart) => {
+        chart.bars.forEach((bar) => {
+          // Animate bar heights
+          const diff = bar.targetHeight - bar.currentHeight
+          bar.currentHeight += diff * bar.animationSpeed
+          
+          // Randomly change target height occasionally
+          if (Math.random() < 0.001) {
+            bar.targetHeight = 15 + Math.random() * 60
+          }
 
-        const isHovered = distance < 120
-        const opacity = isHovered ? route.opacity * 4 : route.opacity
-        const color = isHovered ? "249, 115, 22" : "75, 85, 99"
+          const distance = Math.sqrt(
+            Math.pow(mouseRef.current.x - (bar.x + bar.width/2), 2) + 
+            Math.pow(mouseRef.current.y - (chart.baseY - bar.currentHeight/2), 2)
+          )
 
-        ctx.strokeStyle = `rgba(${color}, ${opacity})`
-        ctx.lineWidth = isHovered ? route.width * 1.5 : route.width
-        ctx.beginPath()
-        ctx.moveTo(route.startX, route.startY)
-        ctx.quadraticCurveTo(route.controlX, route.controlY, route.endX, route.endY)
-        ctx.stroke()
+          const isHovered = distance < 100
+          const opacity = isHovered ? chart.opacity * 6 : chart.opacity
+          const color = isHovered ? "59, 130, 246" : chart.color
 
-        // Draw dashed center line for roads
-        if (isHovered) {
-          ctx.strokeStyle = `rgba(249, 115, 22, ${opacity * 0.6})`
-          ctx.lineWidth = 1
-          ctx.setLineDash([10, 10])
-          ctx.beginPath()
-          ctx.moveTo(route.startX, route.startY)
-          ctx.quadraticCurveTo(route.controlX, route.controlY, route.endX, route.endY)
-          ctx.stroke()
-          ctx.setLineDash([])
-        }
+          ctx.fillStyle = `rgba(${color}, ${opacity})`
+          ctx.fillRect(
+            bar.x, 
+            chart.baseY - bar.currentHeight, 
+            bar.width, 
+            bar.currentHeight
+          )
+
+          // Add subtle highlight on hover
+          if (isHovered) {
+            ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.4})`
+            ctx.lineWidth = 1
+            ctx.strokeRect(
+              bar.x, 
+              chart.baseY - bar.currentHeight, 
+              bar.width, 
+              bar.currentHeight
+            )
+          }
+        })
       })
 
-      // Draw straight roads
-      roads.forEach((road) => {
-        const roadEndX = road.x + Math.cos(road.angle) * road.length
-        const roadEndY = road.y + Math.sin(road.angle) * road.length
-
-        const distance = Math.min(
-          Math.sqrt(Math.pow(mouseRef.current.x - road.x, 2) + Math.pow(mouseRef.current.y - road.y, 2)),
-          Math.sqrt(Math.pow(mouseRef.current.x - roadEndX, 2) + Math.pow(mouseRef.current.y - roadEndY, 2)),
-        )
-
-        const isHovered = distance < 100
-        const opacity = isHovered ? road.opacity * 5 : road.opacity
-        const color = isHovered ? "249, 115, 22" : "75, 85, 99"
-
-        ctx.strokeStyle = `rgba(${color}, ${opacity})`
-        ctx.lineWidth = isHovered ? 4 : 2
-        ctx.beginPath()
-        ctx.moveTo(road.x, road.y)
-        ctx.lineTo(roadEndX, roadEndY)
-        ctx.stroke()
-
-        // Animated dashed center line
-        if (isHovered) {
-          road.dashOffset += 2
-          ctx.strokeStyle = `rgba(249, 115, 22, ${opacity * 0.7})`
-          ctx.lineWidth = 1
-          ctx.setLineDash([8, 8])
-          ctx.lineDashOffset = road.dashOffset
-          ctx.beginPath()
-          ctx.moveTo(road.x, road.y)
-          ctx.lineTo(roadEndX, roadEndY)
-          ctx.stroke()
-          ctx.setLineDash([])
-          ctx.lineDashOffset = 0
-        }
-      })
-
-      // Draw and animate vehicles
-      vehicles.forEach((vehicle) => {
-        const route = routes[vehicle.routeIndex]
-        if (!route) return
-
-        const point = getQuadraticPoint(
-          vehicle.progress,
-          route.startX,
-          route.startY,
-          route.controlX,
-          route.controlY,
-          route.endX,
-          route.endY,
-        )
+      // Draw pie charts
+      pieCharts.forEach((pie) => {
+        // Slow rotation animation
+        pie.rotation += pie.rotationSpeed
 
         const distance = Math.sqrt(
-          Math.pow(mouseRef.current.x - point.x, 2) + Math.pow(mouseRef.current.y - point.y, 2),
+          Math.pow(mouseRef.current.x - pie.x, 2) + Math.pow(mouseRef.current.y - pie.y, 2)
         )
 
-        const isHovered = distance < 80
-        const opacity = isHovered ? vehicle.opacity * 3 : vehicle.opacity
-        const color = isHovered ? "249, 115, 22" : "156, 163, 175"
+        const isHovered = distance < pie.radius + 20
+        const radiusMultiplier = isHovered ? 1.1 : 1
+        const currentRadius = pie.radius * radiusMultiplier
 
-        // Draw vehicle based on type
-        ctx.fillStyle = `rgba(${color}, ${opacity})`
-
-        if (vehicle.type === "car") {
-          // Draw car as rectangle
-          ctx.fillRect(point.x - vehicle.size / 2, point.y - vehicle.size / 3, vehicle.size, vehicle.size / 1.5)
-        } else {
-          // Draw bus as larger rectangle
-          ctx.fillRect(point.x - vehicle.size / 1.5, point.y - vehicle.size / 2, vehicle.size * 1.3, vehicle.size)
-        }
-
-        // Add headlights effect when hovered
-        if (isHovered) {
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.8})`
+        pie.segments.forEach((segment) => {
+          const opacity = isHovered ? segment.opacity * 6 : segment.opacity
+          
+          ctx.fillStyle = `rgba(${segment.color}, ${opacity})`
           ctx.beginPath()
-          ctx.arc(point.x + vehicle.size / 3, point.y, 1, 0, Math.PI * 2)
-          ctx.arc(point.x - vehicle.size / 3, point.y, 1, 0, Math.PI * 2)
+          ctx.moveTo(pie.x, pie.y)
+          ctx.arc(
+            pie.x, 
+            pie.y, 
+            currentRadius, 
+            segment.startAngle + pie.rotation, 
+            segment.endAngle + pie.rotation
+          )
+          ctx.closePath()
           ctx.fill()
-        }
 
-        // Update vehicle progress
-        vehicle.progress += vehicle.speed
-        if (vehicle.progress > 1) {
-          vehicle.progress = 0
-          // Randomly assign new route
-          vehicle.routeIndex = Math.floor(Math.random() * routes.length)
-        }
+          // Add subtle stroke on hover
+          if (isHovered) {
+            ctx.strokeStyle = `rgba(${segment.color}, ${opacity * 0.3})`
+            ctx.lineWidth = 1
+            ctx.stroke()
+          }
+        })
       })
 
       requestAnimationFrame(animate)
