@@ -14,6 +14,8 @@ export default function WaitlistPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
     setIsVisible(true)
@@ -22,17 +24,33 @@ export default function WaitlistPage() {
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitStatus('idle')
+    setErrorMessage("")
 
-    // TODO: Replace with actual API call
+    const apiUrl = process.env.NEXT_PUBLIC_WAITLIST_API_URL || 'https://waitlist-api-dhp4.onrender.com'
+
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Email submitted:", email)
-      alert("Thank you for joining our waitlist!")
+      const response = await fetch(`${apiUrl}/api/waitlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to join waitlist' }))
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log("Email submitted successfully:", data)
+      setSubmitStatus('success')
       setEmail("")
     } catch (error) {
       console.error("Error submitting email:", error)
-      alert("Something went wrong. Please try again.")
+      setSubmitStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
@@ -108,23 +126,40 @@ export default function WaitlistPage() {
         <div
           className={`flex flex-col sm:flex-row gap-4 items-center transition-all duration-1000 delay-800 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
         >
-          <form onSubmit={handleWaitlistSubmit} className="flex gap-4 items-center">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="bg-white text-black border-0 rounded-full px-6 py-2 h-10 w-64 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
-            />
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-transparent border border-gray-600 text-white hover:bg-gray-800 rounded-full px-6 py-2 h-10 transition-all duration-300"
-            >
-              {isSubmitting ? "Joining..." : "Join Waitlist"} <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </form>
+          {submitStatus === 'success' ? (
+            <div className="text-center">
+              <div className="text-green-500 text-lg font-medium mb-2">
+                🎉 Thank you for joining our waitlist!
+              </div>
+              <p className="text-gray-400 text-sm">We'll keep you updated on our progress.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleWaitlistSubmit} className="flex flex-col gap-4 items-center">
+              <div className="flex gap-4 items-center">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isSubmitting}
+                  className="bg-white text-black border-0 rounded-full px-6 py-2 h-10 w-64 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                />
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-transparent border border-gray-600 text-white hover:bg-gray-800 rounded-full px-6 py-2 h-10 transition-all duration-300 disabled:opacity-50"
+                >
+                  {isSubmitting ? "Joining..." : "Join Waitlist"} <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+              {submitStatus === 'error' && (
+                <div className="text-red-400 text-sm text-center max-w-md">
+                  {errorMessage}
+                </div>
+              )}
+            </form>
+          )}
         </div>
       </div>
 
