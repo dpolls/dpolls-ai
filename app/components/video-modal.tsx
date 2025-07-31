@@ -40,11 +40,11 @@ export function VideoModal({ isOpen, onClose }: VideoModalProps) {
           {/* Replace with actual video embed */}
           <div className="w-full h-full flex items-center justify-center text-gray-400">
             <div className="text-center">
-              <div className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-white">UV</span>
+              <div className="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-xl font-bold text-white">dAI</span>
               </div>
               <p className="text-lg">Demo video coming soon...</p>
-              <p className="text-sm mt-2">Experience the future of UV Express transportation</p>
+              <p className="text-sm mt-2">Experience the future of AI-powered polling</p>
             </div>
           </div>
         </div>

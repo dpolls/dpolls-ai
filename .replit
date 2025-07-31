@@ -1,0 +1,54 @@
+modules = ["nodejs-20", "web"]
+hidden = [".config", "tsconfig.json", "tsconfig.tsbuildinfo", "next-env.d.ts", ".next", "README.md"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+publicDir = "/"
+deploymentTarget = "static"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[languages.typescript]
+pattern = "**/{*.ts,*.js,*.tsx,*.jsx}"
+
+[languages.typescript.languageServer]
+start = "typescript-language-server --stdio"
+
+[env]
+XDG_CONFIG_HOME = "$REPL_HOME/.config"
+PATH = "$REPL_HOME/.config/npm/bin:$REPL_HOME/node_modules/.bin"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[packager]
+language = "nodejs"
+
+[packager.features]
+packageSearch = true
+guessImports = true
+enabledForHosting = false
+
+[unitTest]
+language = "nodejs"
+
+[debugger]
+support = true
+
+[debugger.interactive]
+transport = "localhost:0"
+startCommand = ["dap-node"]
+
+[debugger.interactive.initializeMessage]
+command = "initialize"
+type = "request"
+
+[debugger.interactive.launchMessage]
+command = "launch"
+type = "request"
+program = "./index.js"
+args = []

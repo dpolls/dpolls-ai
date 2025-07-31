@@ -48,7 +48,7 @@ export default function WaitlistPage() {
         <div
           className={`mb-20 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
         >
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-center">UV Express</h1>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-center">dpolls AI</h1>
         </div>
 
         {/* Main Content Grid */}
@@ -61,8 +61,8 @@ export default function WaitlistPage() {
               <div className="relative cursor-pointer group" onClick={() => setIsVideoModalOpen(true)}>
                 <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden relative">
                   <img
-                    src="/placeholder.svg?height=200&width=300&text=UV+Express+in+action"
-                    alt="UV Express Demo"
+                    src="/placeholder.svg?height=200&width=300&text=dpolls+AI+in+action"
+                    alt="dpolls AI Demo"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-all duration-300">
@@ -71,7 +71,7 @@ export default function WaitlistPage() {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-400 text-sm mt-3 text-center">UV Express Demo</p>
+                <p className="text-gray-400 text-sm mt-3 text-center">dpolls AI Demo</p>
               </div>
             </div>
 
@@ -82,9 +82,9 @@ export default function WaitlistPage() {
               <div className="text-center lg:text-left">
                 <h2 className="text-3xl md:text-4xl font-bold mb-2 leading-tight">hello,</h2>
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
-                  <span className="text-orange-500">smart transportation</span>
+                  <span className="text-blue-500">intelligent polling</span>
                 </h2>
-                <p className="text-gray-400 text-base">connecting drivers and passengers seamlessly</p>
+                <p className="text-gray-400 text-base">AI-powered surveys and decision making</p>
               </div>
             </div>
 
@@ -94,11 +94,10 @@ export default function WaitlistPage() {
             >
               <div className="border border-gray-700 rounded-lg p-4 bg-gray-900/30">
                 <h3 className="text-sm font-medium mb-3 text-gray-300 border border-gray-600 rounded-full px-3 py-1 inline-block">
-                  What is UV Express?
+                  What is dpolls AI?
                 </h3>
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  UV Express is the modern way to match drivers and passengers in real time. Secure, fast, and built for
-                  convenience. Join our waitlist to be part of the future of public transport.
+                  dpolls AI is the next generation polling platform powered by artificial intelligence. Create smarter surveys, get deeper insights, and make better decisions. Join our waitlist to experience the future of data collection.
                 </p>
               </div>
             </div>
@@ -116,7 +115,7 @@ export default function WaitlistPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-white text-black border-0 rounded-full px-6 py-2 h-10 w-64 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
+              className="bg-white text-black border-0 rounded-full px-6 py-2 h-10 w-64 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
             />
             <Button
               type="submit"

@@ -9,8 +9,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "UV Express - Join the Waitlist",
-  description: "Fast. Smarter. UV Express. Connecting drivers and passengers seamlessly.",
+  title: "dpolls AI - Join the Waitlist",
+  description: "AI-powered polling and decision making platform. Join the future of intelligent surveys.",
     generator: 'v0.dev'
 }
 

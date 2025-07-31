@@ -1,12 +1,13 @@
 {
-  "name": "my-v0-project",
+  "name": "dpolls-ai-waitlist",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start --hostname 0.0.0.0",
+    "replit": "pnpm install && pnpm dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
