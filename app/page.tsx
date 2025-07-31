@@ -35,7 +35,10 @@ export default function WaitlistPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ 
+          email,
+          projectName: 'dpolls-ai'
+        }),
       })
 
       if (!response.ok) {
